@@ -1,0 +1,122 @@
+import java.util.Scanner;
+
+public class ATM {
+    public static void useATM(BankAccount bankAccount) {
+        Scanner scanner = new Scanner(System.in);
+        char option = '\0';
+        do {
+            Menu.showMenu();
+            option = scanner.next().charAt(0);
+            switch (option) {
+                case 'A':
+                    System.out.println(bankAccount.getBalance());
+                    break;
+                case 'B':
+                    System.out.println("Enter an amount to deposit: ");
+                    int amountToDeposit = scanner.nextInt();
+                    bankAccount.deposit(amountToDeposit);
+                    break;
+                case 'C':
+                    System.out.println("Enter an amount to withdraw: ");
+                    int amountToWithdraw = scanner.nextInt();
+                    bankAccount.withdraw(amountToWithdraw);
+                    break;
+                case 'X':
+                    System.out.println("The transaction is over. ");
+                    break;
+                default:
+                    System.out.println("Not a valid option. Choose another option.");
+                    break;
+                    
+            }
+        } while (option != 'X');
+    }
+    public class BankAccount {
+        String IBAN;
+        int balance;
+        String pin;
+    
+        public BankAccount(String IBAN, int balance, String pin) {
+            this.IBAN = IBAN;
+            this.balance = balance;
+            this.pin = pin;
+        }
+    
+        public int getBalance() {
+            return this.balance;
+        }
+    
+        public void deposit(int amount) {
+            this.balance = this.balance + amount;
+        }
+    
+        public void withdraw(int amount) {
+            if (amount <= this.balance) {
+                this.balance = this.balance - amount;
+                System.out.println("You withdrew " + amount);
+            } else {
+                System.out.println("Not enough money. ");
+            }
+        }
+        public class BankingSystemWithPin {
+             {
+                BankAccount bankAccount1 = new BankAccount("RO29455302311322", 200, "1234");
+                BankAccount bankAccount2 = new BankAccount("RO43593530521134", 600, "7530");
+                BankAccount[] bankAccounts = {bankAccount1, bankAccount2};
+                Scanner scanner = new Scanner(System.in);
+                Menu.welcome();
+                String pin = scanner.nextLine();
+                BankAccount currentBankAccount = BankingSystemWithPin.getBankAccountByPin(bankAccounts, pin);
+                ATM.useATM(currentBankAccount);
+            }
+            public static BankAccount getBankAccountByPin(BankAccount[] bankAccounts, String pin) {
+                for (BankAccount bankAccount : bankAccounts) {
+                    if (bankAccount.pin.equals(pin)) {
+                        return bankAccount;
+                    } else if (!bankAccount.pin.equals(pin) ) {
+                        System.out.println("Wrong Pin. Try Again.");
+                    }
+                }
+                return null;
+            }
+            public class PinLockout {
+
+                Scanner scanner = new Scanner(System.in);
+                int pin = 1234;
+                int tries = 0;
+                public PinLockout() {
+                    System.out.println("ENTER YOUR PIN: ");
+            
+                    int entry = scanner.nextInt();
+                    tries++;
+            
+                    while (entry != pin && tries < 3) {
+                        System.out.println("\nINCORRECT PIN. TRY AGAIN.");
+                        System.out.println("ENTER YOUR PIN: ");
+                        entry = scanner.nextInt();
+                        tries++;
+                    }
+                    if (entry == pin) {
+                        System.out.println("\nPIN ACCEPTED. ACCESS GRANTED.");
+                    } else if (tries >= 3) {
+                        System.out.println("\nYOU HAVE RUN OUT OF TRIES. ACCOUNT LOCKED.");
+                    }
+                }
+            }
+        }
+    }
+    public class Menu {
+        public static void showMenu() {
+            System.out.println("Enter an option: ");
+            System.out.println("A. Check balance ");
+            System.out.println("B. Deposit ");
+            System.out.println("C. Withdraw ");
+            System.out.println("X. Exit");
+        }
+        public static void welcome() {
+            System.out.println("Welcome! ");
+            System.out.println("Please insert your pin: ");
+        }
+    }
+    
+}
